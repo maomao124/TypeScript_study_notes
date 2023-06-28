@@ -169,9 +169,408 @@ obj 类型不确定，就给后期使用者带来了麻烦，一旦参数传不�
 
 
 
+## 在Vue中使用ts
+
+全新项目：使用vue cli脚手架工具创建vue项目时，勾选 ts
+
+已有项目：添加vue官方配置的ts适配插件，使用@vue/cli 安装 ts插件
+
+```sh
+vue add @vue/typescript
+```
+
+
+
+
+
+或者手动安装：
+
+```sh
+npm install ts-loader typescript tslint tslint-loader tslint-config-standard --save-dev
+```
+
+```sh
+npm install vue-class-component vue-property-decorator --save
+```
+
+
+
+* vue-class-component：扩展vue支持typescript，将原有的vue语法通过声明的方式来支持ts
+* vue-property-decorator：基于vue-class-component扩展更多装饰器
+* ts-loader：让webpack能够识别ts文件
+* tslint-loader：tslint用来约束文件编码
+* tslint-config-standard： tslint 配置 standard风格的约束
+
+
+
+
+
+在vue中使用要加上`lang="ts"`
+
+```vue
+<template>
+
+</template>
+
+<script lang="ts">
+export default {
+  name: "View1",
+}
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 入门
 
 输出helloworld，并打印显示helloworld
 
+```vue
+<template>
+  <div>
+    <h1>{{ str }}</h1>
+  </div>
+</template>
 
+<script setup lang="ts">
+
+const str: string = 'hello world';
+
+function hello(str: string)
+{
+  console.log(str);
+}
+
+hello(str);
+
+
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+![image-20230629001946125](img/TypeScript学习笔记/image-20230629001946125.png)
+
+
+
+![image-20230629001955471](img/TypeScript学习笔记/image-20230629001955471.png)
+
+
+
+
+
+
+
+用 interface 定义用户类型：
+
+```vue
+<template>
+  <div>
+    <h1>{{ user }}</h1>
+  </div>
+</template>
+
+<script setup lang="ts">
+interface User
+{
+  id: number
+  name: string,
+  age: number,
+}
+
+function printUser(user: User): void
+{
+  console.log("user.id=" + user.id)
+  console.log("user.name=" + user.name)
+  console.log("user.age=" + user.age)
+}
+
+const user: User = {
+  id: 10001,
+  name: '张三',
+  age: 19
+}
+
+printUser(user);
+
+</script>
+
+<style scoped>
+
+</style>
+
+```
+
+
+
+![image-20230629003013014](img/TypeScript学习笔记/image-20230629003013014.png)
+
+
+
+
+
+![image-20230629003021532](img/TypeScript学习笔记/image-20230629003021532.png)
+
+
+
+
+
+
+
+
+
+
+
+## 类型
+
+
+
+|    类型     |                  例                   |             备注             |
+| :---------: | :-----------------------------------: | :--------------------------: |
+| 字符串类型  |                string                 |                              |
+|  数字类型   |                number                 |                              |
+|  布尔类型   |                boolean                |                              |
+|  数组类型   | number[],string[], boolean[] 依此类推 |                              |
+|  任意类型   |                  any                  | 相当于又回到了没有类型的时代 |
+|  复杂类型   |           type 与 interface           |                              |
+|  函数类型   |              () => void               | 对函数的参数和返回值进行说明 |
+| 字面量类型  |             "a"\|"b"\|"c"             |     限制变量或参数的取值     |
+| nullish类型 |           null 与 undefined           |                              |
+|    泛型     |      `<T>`，`<T extends 父类型>`      |                              |
+
+
+
+
+
+## 类型标注位置
+
+### 标注变量
+
+```typescript
+let message: string = 'hello,world'
+```
+
+
+
+一般可以省略，因为可以根据后面的字面量推断出前面变量类型
+
+```typescript
+let message = 'hello,world'
+```
+
+
+
+
+
+### 标注参数
+
+```typescript
+function test(name: string) {
+    
+}
+```
+
+
+
+![image-20230629004337101](img/TypeScript学习笔记/image-20230629004337101.png)
+
+
+
+![image-20230629004343890](img/TypeScript学习笔记/image-20230629004343890.png)
+
+
+
+
+
+### 标注返回值
+
+```vue
+<template>
+
+</template>
+
+<script lang="ts" setup>
+function add(a: number, b: number): number
+{
+  return a + b;
+}
+
+console.log(add(1, 2))
+
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+
+
+
+
+## 复杂类型
+
+### type
+
+```vue
+<template>
+
+</template>
+
+<script lang="ts" setup>
+
+type Student = {
+  id: number,
+  name: string,
+  sex: string,
+  age: number
+}
+const student1: Student = {id: 10001, name: "张三", sex: "男", age: 19};
+//报错，缺少age
+const student2: Student = {id: 10001, name: "张三", sex: "男"};
+//报错，多了address
+const student3: Student = {id: 10001, name: "张三", sex: "男", age: 19, address: "中国"};
+
+
+console.log(student1);
+console.log(student2);
+console.log(student3);
+
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+![image-20230629005056074](img/TypeScript学习笔记/image-20230629005056074.png)
+
+
+
+
+
+![image-20230629005114033](img/TypeScript学习笔记/image-20230629005114033.png)
+
+
+
+
+
+
+
+
+
+### interface
+
+和type区别在于，少了一个等号
+
+```vue
+<template>
+
+</template>
+
+<script lang="ts" setup>
+
+interface Student
+{
+  id: number,
+  name: string,
+  sex: string,
+  age: number
+}
+
+const student1: Student = {id: 10001, name: "张三", sex: "男", age: 19};
+//报错，缺少age
+const student2: Student = {id: 10001, name: "张三", sex: "男"};
+//报错，多了address
+const student3: Student = {id: 10001, name: "张三", sex: "男", age: 19, address: "中国"};
+
+
+console.log(student1);
+console.log(student2);
+console.log(student3);
+
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+
+
+
+
+### 可选属性
+
+如果需要某个属性可选，可以用下面的语法
+
+```vue
+<template>
+
+</template>
+
+<script lang="ts" setup>
+
+interface Student
+{
+  id: number,
+  name: string,
+  sex: string,
+  age?: number
+}
+
+const student1: Student = {id: 10001, name: "张三", sex: "男", age: 19};
+//并不会报错，缺少age，但是会出现undefined
+const student2: Student = {id: 10001, name: "张三", sex: "男"};
+console.log(student1);
+console.log(student2);
+console.log(student2.age)
+
+</script>
+
+<style scoped>
+
+</style>
+
+```
+
+
+
+![image-20230629005652205](img/TypeScript学习笔记/image-20230629005652205.png)
+
+
+
+![image-20230629005711785](img/TypeScript学习笔记/image-20230629005711785.png)
+
+
+
+
+
+
+
+### 鸭子类型
 
