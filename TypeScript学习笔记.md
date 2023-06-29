@@ -29,6 +29,16 @@ TypeScript与js相比的优势：
 
 
 
+## 官网
+
+网站首页：https://www.tslang.cn/index.html
+
+文档地址：https://www.tslang.cn/docs/home.html
+
+
+
+
+
 
 
 ## 安装
@@ -573,4 +583,288 @@ console.log(student2.age)
 
 
 ### 鸭子类型
+
+```vue
+<template>
+
+</template>
+
+<script lang="ts" setup>
+
+interface Student
+{
+  id: number,
+  name: string,
+  sex: string,
+  age: number
+}
+
+const student1: Student = {id: 10001, name: "张三", sex: "男", age: 19};
+
+//报错，多了address
+//const student3: Student = {id: 10001, name: "张三", sex: "男", age: 19, address: "中国"};
+
+const student3 = {id: 10001, name: "张三", sex: "男", age: 19, address: "中国"};
+//鸭子类型，student3并没有声明类型为Student，但它与 Student 类型有一样的属性，也可以被当作是 Student 类型
+
+console.log(student1);
+console.log(student3);
+
+</script>
+
+<style scoped>
+
+</style>
+```
+
+student3并没有声明类型为Student，但它与 Student 类型有一样的属性，也可以被当作是 Student 类型
+
+
+
+
+
+
+
+## 方法类型
+
+interface中包含方法（函数）
+
+
+
+```vue
+<template>
+  <div>
+    <h2>{{ user }}</h2>
+  </div>
+</template>
+
+<script lang="ts" setup>
+
+import {onBeforeMount, onMounted} from "vue";
+
+interface User
+{
+  id: number,
+  name: string,
+  age: number,
+
+  getName(): string
+
+  getAgeString(): string
+
+  setName(name: string): void
+}
+
+const user: User = {
+  id: 10002,
+  name: "张三",
+  age: 12,
+  getName(): string
+  {
+    return this.name
+  },
+  getAgeString(): string
+  {
+    if (this.age < 0 || this.age > 120)
+    {
+      return "年龄输入错误"
+    }
+    if (this.age < 18)
+    {
+      return "未成年";
+    }
+    if (this.age < 30)
+    {
+      return "青年"
+    }
+    if (this.age < 60)
+    {
+      return "中年"
+    }
+    return "老年"
+  },
+  setName(name: string)
+  {
+    this.name = name;
+  }
+}
+
+onBeforeMount(()=>
+{
+  console.log(user.getName())
+  console.log(user.getAgeString())
+  user.setName("李四")
+  console.log(user.getName())
+})
+
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+![image-20230629141837662](img/TypeScript学习笔记/image-20230629141837662.png)
+
+
+
+![image-20230629141851836](img/TypeScript学习笔记/image-20230629141851836.png)
+
+
+
+
+
+
+
+
+
+
+
+## 字面量类型
+
+```vue
+<template>
+  <div>
+
+  </div>
+</template>
+
+<script lang="ts" setup>
+
+/**
+ * 打印字符串到控制台
+ * @param str 字符串
+ * @param alignment 对齐方式，只能取值left、right和center
+ */
+function print(str: string, alignment: "left" | "right" | "center")
+{
+  console.log(str, alignment)
+}
+
+print("hello", "left")
+print("hello", "right")
+print("hello", "center")
+//以下报错：Argument of type '"131412351"' is not assignable to parameter of type '"left" | "right" | "center"'
+print("hello","131412351")
+
+
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+![image-20230629142445062](img/TypeScript学习笔记/image-20230629142445062.png)
+
+
+
+
+
+
+
+
+
+## nullish 类型
+
+在冒号前面加一个问号，表示字段可以为空
+
+```vue
+<template>
+
+</template>
+
+<script lang="ts" setup>
+
+interface StudentV1
+{
+  id: number,
+  name: string,
+  sex: string,
+  age: number
+}
+
+interface StudentV2
+{
+  id: number,
+  name: string,
+  sex?: string,
+  age?: number
+}
+
+//Property 'age' is missing in type '{ id: number; name: string; sex: string; }' but required in type 'StudentV1'.
+const studentV1: StudentV1 = {id: 10001, name: "张三", sex: "男"};
+//Type 'undefined' is not assignable to type 'number'.
+const student2V1: StudentV1 = {id: 10001, name: "张三", sex: "男", age: undefined};
+//并不会报错
+const studentV2: StudentV2 = {id: 10001, name: "张三"};
+const student2V2: StudentV2 = {id: 10001, name: "张三",sex:undefined};
+
+console.log(studentV1)
+console.log(studentV2)
+console.log(student2V1)
+console.log(student2V2)
+
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+```vue
+<template>
+
+</template>
+
+<script lang="ts" setup>
+
+function toUpperCase(str?: string | null): string
+{
+  return str?.toUpperCase() || "无效字符串"
+}
+
+function toUpperCase2(str: string): string
+{
+  return str.toUpperCase()
+}
+
+console.log(toUpperCase("hello"))
+console.log(toUpperCase(null))
+console.log(toUpperCase())
+
+console.log(toUpperCase2("hello2"))
+//Argument of type 'null' is not assignable to parameter of type 'string'.
+console.log(toUpperCase2(null))
+//Expected 1 arguments, but got 0.
+console.log(toUpperCase2())
+
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+![image-20230629144226616](img/TypeScript学习笔记/image-20230629144226616.png)
+
+
+
+
+
+
+
+
+
+
+
+## 泛型
 
