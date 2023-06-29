@@ -1,5 +1,21 @@
 <h1 style="color:skyblue;text-align:center">TypeScript学习笔记</h1>
 
+[TOC]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1459,4 +1475,230 @@ console.log(student.name)
 
 
 ### 类与接口
+
+```vue
+<template>
+  <div>
+    <h2>
+      {{userService.getLoginUser()}}
+    </h2>
+  </div>
+</template>
+
+<script setup lang="ts">
+
+/**
+ * 实体类
+ */
+interface User
+{
+  id: number;
+  name: string;
+}
+
+/**
+ * 接口
+ */
+interface UserService
+{
+  /**
+   * 登录
+   */
+  login(user: User): void
+
+  /**
+   * 得到当前登录人的信息
+   */
+  getLoginUser(): User
+}
+
+/**
+ * 实现类
+ */
+class UserServiceImpl implements UserService
+{
+  getLoginUser(): User
+  {
+    return {id: 100001, name: '张三'};
+  }
+
+  login(user: User): void
+  {
+    console.log(user)
+  }
+}
+
+const userService: UserService = new UserServiceImpl();
+
+const loginUser = userService.getLoginUser();
+console.log(loginUser)
+userService.login(loginUser);
+
+console.log()
+
+</script>
+
+<style scoped>
+
+</style>
+
+```
+
+
+
+![image-20230629230457143](img/TypeScript学习笔记/image-20230629230457143.png)
+
+![image-20230629230544553](img/TypeScript学习笔记/image-20230629230544553.png)
+
+
+
+
+
+
+
+
+
+### 继承与接口
+
+```vue
+<template>
+  <div>
+  </div>
+</template>
+
+<script setup lang="ts">
+
+interface Flyable
+{
+  fly(): void
+}
+
+class Animal
+{
+  name: string;
+
+  constructor(name: string)
+  {
+    this.name = name
+  }
+}
+
+class Bird extends Animal implements Flyable
+{
+  fly()
+  {
+    console.log(`${this.name}在飞翔`)
+  }
+}
+
+const b: Flyable & Animal = new Bird("小黄鸟")
+b.fly()
+
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+![image-20230629231213300](img/TypeScript学习笔记/image-20230629231213300.png)
+
+
+
+
+
+
+
+
+
+
+
+### 方法重写
+
+```vue
+<template>
+  <div>
+  </div>
+</template>
+
+<script setup lang="ts">
+
+class C1
+{
+  study()
+  {
+    console.log("C1 study")
+  }
+}
+
+class C2 extends C1
+{
+  study()
+  {
+    super.study();
+    console.log("C2 study")
+  }
+}
+
+let c: C1 = new C2()
+c.study();
+
+c = new C1()
+c.study();
+
+
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+![image-20230629231836112](img/TypeScript学习笔记/image-20230629231836112.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+end
+
+---
+2023  06  29
+
+---
+
+
+
+
+
+
+
+
 
